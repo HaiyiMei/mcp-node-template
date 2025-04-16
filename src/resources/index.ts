@@ -71,6 +71,4 @@ Description: A template for creating MCP servers with Node.js
         throw new Error(`Resource not found: ${uri}`);
     }
   });
-  
-  console.error("Resources configured");
 } 

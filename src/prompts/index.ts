@@ -61,7 +61,7 @@ export function configurePrompts(server: Server) {
     const { name, arguments: args } = request.params;
     
     if (name === "greeting") {
-      const personName = args?.name || "User";
+      const personName = args?.name || "user";
       const style = args?.style || "casual";
       
       let prompt = "";
@@ -85,13 +85,13 @@ export function configurePrompts(server: Server) {
       
       return {
         messages: [
-          {
-            role: "system",
-            content: {
-              type: "text",
-              text: systemRole
-            }
-          },
+          // {
+          //   role: "system",
+          //   content: {
+          //     type: "text",
+          //     text: systemRole
+          //   }
+          // },
           {
             role: "user",
             content: {
@@ -124,13 +124,13 @@ export function configurePrompts(server: Server) {
       
       return {
         messages: [
-          {
-            role: "system",
-            content: {
-              type: "text",
-              text: `You are a helpful assistant that creates clear and concise summaries.`
-            }
-          },
+          // {
+          //   role: "system",
+          //   content: {
+          //     type: "text",
+          //     text: `You are a helpful assistant that creates clear and concise summaries.`
+          //   }
+          // },
           {
             role: "user",
             content: {
@@ -144,6 +144,4 @@ export function configurePrompts(server: Server) {
     
     throw new Error(`Prompt not found: ${name}`);
   });
-  
-  console.error("Prompts configured");
 } 
