@@ -11,7 +11,7 @@ import { configurePrompts } from "./prompts/index.js";
  */
 async function main() {
   try {
-    console.error("Starting MCP SSE server...");
+    console.log("Starting MCP SSE server...");
 
     // Create a new server instance
     const server = new Server(
@@ -37,54 +37,24 @@ async function main() {
 
     // SSE endpoint for establishing connection
     app.get("/sse", async (_: Request, res: Response) => {
-      console.error("New SSE connection request");
-      try {
-        const transport = new SSEServerTransport("/messages", res);
-        transports[transport.sessionId] = transport;
-        console.error(
-          `SSE connection established with session ID: ${transport.sessionId}`
-        );
-
-        res.on("close", () => {
-          console.error(
-            `SSE connection closed for session ID: ${transport.sessionId}`
-          );
-          delete transports[transport.sessionId];
-        });
-
-        await server.connect(transport);
-        console.error(
-          `MCP Server connected to transport for session ID: ${transport.sessionId}`
-        );
-      } catch (error) {
-        console.error("Error establishing SSE connection:", error);
-        // Ensure response is properly handled in case of error before headers sent
-        if (!res.headersSent) {
-          res.status(500).send("Failed to establish SSE connection");
-        }
-      }
+      console.log("New SSE connection request");
+      const transport = new SSEServerTransport("/messages", res);
+      transports[transport.sessionId] = transport;
+      res.on("close", () => {
+        delete transports[transport.sessionId];
+      });
+      await server.connect(transport);
     });
 
     // Endpoint for receiving messages from client
     app.post("/messages", async (req: Request, res: Response) => {
       const sessionId = req.query.sessionId as string;
-      console.error(`Received POST to /messages for session ID: ${sessionId}`);
       const transport = transports[sessionId];
+      console.log(`Received POST to /messages for session ID: ${sessionId}`);
       if (transport) {
-        try {
-          await transport.handlePostMessage(req, res);
-          console.error(`Handled POST message for session ID: ${sessionId}`);
-        } catch (error) {
-          console.error(
-            `Error handling POST message for session ID ${sessionId}:`,
-            error
-          );
-          if (!res.headersSent) {
-            res.status(500).send("Error processing message");
-          }
-        }
+        await transport.handlePostMessage(req, res);
       } else {
-        console.error(`No transport found for session ID: ${sessionId}`);
+        console.log(`No transport found for session ID: ${sessionId}`);
         res.status(400).send("No transport found for sessionId");
       }
     });
@@ -92,11 +62,11 @@ async function main() {
     // Start the express server
     const port = process.env.PORT || 3001;
     app.listen(port, () => {
-      console.error(
+      console.log(
         `MCP SSE server "${SERVER_CONFIG.name}" v${SERVER_CONFIG.version} listening on port ${port}`
       );
-      console.error(`SSE endpoint available at http://localhost:${port}/sse`);
-      console.error(
+      console.log(`SSE endpoint available at http://localhost:${port}/sse`);
+      console.log(
         `Message endpoint available at http://localhost:${port}/messages`
       );
     });

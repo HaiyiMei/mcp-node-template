@@ -3,7 +3,6 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema
 } from "@modelcontextprotocol/sdk/types.js";
-import { z } from "zod";
 
 /**
  * Configure tools for the MCP server
@@ -176,6 +175,4 @@ export function configureTools(server: Server) {
       ]
     };
   });
-  
-  console.error("Tools configured");
 } 
