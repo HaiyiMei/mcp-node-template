@@ -90,25 +90,44 @@ Add your tool definitions in `src/tools/index.ts`:
 
 ```typescript
 // Example of adding a custom tool
-server.tool(
-  "custom-tool",
-  "Description of my custom tool",
-  {
-    param1: z.string().describe("Parameter description"),
-    param2: z.number().describe("Parameter description")
-  },
-  async ({ param1, param2 }) => {
-    // Tool implementation
+server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  const { name, arguments: args = {} } = request.params;
+
+  if (name === "custom-tool") {
+    const message = args.message as string;
     return {
       content: [
         {
           type: "text",
-          text: `Processed: ${param1}, ${param2}`
+          text: `Processed: ${message}`
         }
       ]
     };
   }
-);
+  // If tool not found
+  throw new Error(`Tool not found: ${name}`);
+});
+
+server.setRequestHandler(ListToolsRequestSchema, async () => {
+  return {
+    tools: [
+      {
+        name: "custom-tool",
+        description: "Description of my custom tool",
+        inputSchema: {
+          type: "object",
+          properties: {
+            message: {
+              type: "string",
+              description: "Description of my custom tool's message parameter"
+            }
+          },
+          required: ["message"]
+        }
+      },
+    ]
+  };
+});
 ```
 
 ### Adding New Prompts
