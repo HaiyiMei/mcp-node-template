@@ -1,4 +1,4 @@
-# MCP Node Template
+# MCP Node.js Template
 
 A template project for creating [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) servers using Node.js and TypeScript.
 
@@ -47,6 +47,8 @@ mcp-node-template/
    ```
 
 ## Extending the Template
+
+**REMEMBER** to remove the example resources, tools, and prompts in the `index.ts` files before deploying your server.
 
 ### Adding New Resources
 
@@ -133,6 +135,11 @@ PROMPTS["custom-prompt"] = {
 };
 ```
 
+### Notes
+
+Please avoid using `console.log` in your code. Because it would be sent wrongly to the MCP Client.
+
+
 ## How to Use
 
 ### Connect to Claude for Desktop
@@ -176,38 +183,6 @@ npx @modelcontextprotocol/inspector -e key=$VALUE -- node build/index.js -e serv
 
 The inspector runs both an MCP Inspector (MCPI) client UI (default port 6274) and an MCP Proxy (MCPP) server (default port 6277). Open the MCPI client UI in your browser to use the inspector.
 
-### Configuration
-
-The inspector supports configuration files to store settings for different MCP servers. This is useful when working with multiple servers or complex configurations:
-
-```bash
-npx @modelcontextprotocol/inspector --config path/to/config.json --server everything
-```
-
-Example server configuration file:
-
-```json
-{
-  "mcpServers": {
-    "everything": {
-      "command": "npx",
-      "args": ["@modelcontextprotocol/server-everything"],
-      "env": {
-        "hello": "Hello MCP!"
-      }
-    },
-    "my-server": {
-      "command": "node",
-      "args": ["build/index.js", "arg1", "arg2"],
-      "env": {
-        "key": "value",
-        "key2": "value2"
-      }
-    }
-  }
-}
-```
-
 ### CLI Mode
 
 CLI mode enables programmatic interaction with MCP servers from the command line, ideal for scripting, automation, and integration with coding assistants. This creates an efficient feedback loop for MCP server development.
@@ -245,6 +220,51 @@ npx @modelcontextprotocol/inspector --cli https://my-mcp-server.example.com --me
 
 # List resources from a remote server
 npx @modelcontextprotocol/inspector --cli https://my-mcp-server.example.com --method resources/list
+```
+
+### Configuration
+
+The MCP Inspector supports the following configuration settings. To change them, click on the `Configuration` button in the MCP Inspector UI:
+
+| Setting                                 | Description                                                                                                  | Default |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ------- |
+| `MCP_SERVER_REQUEST_TIMEOUT`            | Timeout for requests to the MCP server (ms)                                                                  | 10000   |
+| `MCP_REQUEST_TIMEOUT_RESET_ON_PROGRESS` | Reset timeout on progress notifications                                                                      | true    |
+| `MCP_REQUEST_MAX_TOTAL_TIMEOUT`         | Maximum total timeout for requests sent to the MCP server (ms) (Use with progress notifications)             | 60000   |
+| `MCP_PROXY_FULL_ADDRESS`                | Set this if you are running the MCP Inspector Proxy on a non-default address. Example: http://10.1.1.22:5577 | ""      |
+
+These settings can be adjusted in real-time through the UI and will persist across sessions.
+
+### Configuration Files
+
+The inspector supports configuration files to store settings for different MCP servers. This is useful when working with multiple servers or complex configurations:
+
+```bash
+npx @modelcontextprotocol/inspector --config path/to/config.json --server everything
+```
+
+Example server configuration file:
+
+```json
+{
+  "mcpServers": {
+    "everything": {
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-everything"],
+      "env": {
+        "hello": "Hello MCP!"
+      }
+    },
+    "my-server": {
+      "command": "node",
+      "args": ["build/index.js", "arg1", "arg2"],
+      "env": {
+        "key": "value",
+        "key2": "value2"
+      }
+    }
+  }
+}
 ```
 
 ### UI Mode vs CLI Mode: When to Use Each

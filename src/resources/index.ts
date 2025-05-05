@@ -8,18 +8,13 @@ import {
  * Example resources to expose through the MCP server
  */
 const EXAMPLE_RESOURCES = [
+  // Example resource, remove this if you don't need it
   {
     uri: "example://greeting",
     name: "Greeting",
     description: "A simple greeting resource",
     mimeType: "text/plain"
   },
-  {
-    uri: "example://info",
-    name: "Server Info",
-    description: "Information about this server",
-    mimeType: "text/plain"
-  }
 ];
 
 /**
@@ -48,21 +43,6 @@ export function configureResources(server: Server) {
               uri,
               mimeType: "text/plain",
               text: "Hello from MCP Server!"
-            }
-          ]
-        };
-        
-      case "example://info":
-        return {
-          contents: [
-            {
-              uri,
-              mimeType: "text/plain",
-              text: `
-Server: MCP Node Template
-Version: 1.0.0
-Description: A template for creating MCP servers with Node.js
-`.trim()
             }
           ]
         };
